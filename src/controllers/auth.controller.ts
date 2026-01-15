@@ -20,11 +20,13 @@ export const register = async (
       return;
     }
 
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     // 3️⃣ Create user
     const user = await User.create({
       name,
       email,
-      password,
+      password:hashedPassword,
       role: UserRole.USER,
     });
 
@@ -54,7 +56,7 @@ export const login = async (
   try {
     const {  email, password } = req.body;
     // 2️⃣ Check existing user
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).select("+password");
     
     if (!user) {
       res.status(400).json({
@@ -78,7 +80,7 @@ export const login = async (
     // 4️⃣ Response (never send password)
     res.status(200).json({
       success: true,
-      message: "User registered successfully",
+      message: "User logged in successfully",
       data: {
         id: user._id,
         name: user.name,
