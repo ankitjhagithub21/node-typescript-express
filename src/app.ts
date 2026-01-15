@@ -1,10 +1,13 @@
 import express from 'express';
 import { errorHandler } from './middlewares/errorHandler';
+import authRoutes from "./routes/auth.routes"
 
 const app = express();
 
 app.use(express.json());
 
+
+app.use("/auth", authRoutes)
 // Global error handler (should be after routes)
 app.use(errorHandler);
 
